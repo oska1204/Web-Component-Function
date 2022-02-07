@@ -1,27 +1,38 @@
-function WebComponentFunction(name,
+const excludeAttributes = [
+    'observedAttributes',
+    'attributeChangedCallback',
+    'connectedCallback',
+    'disconnectedCallback',
+    'adoptedCallback',
+    'init'
+]
+
+function WebComponentFunction(
+    name,
     options = {},
-    prototype = {},
     classElement = HTMLElement,
     extendsTag
 ) {
     const {
-        observedAttributes = Object.keys(options)
-    } = prototype
-    const {
+        observedAttributes = Object.keys(options).filter(e => !excludeAttributes.includes(e)),
         attributeChangedCallback = function (name, oldValue, newValue) {
             if (observedAttributes.includes(name))
                 options[name].call(this, newValue, oldValue)
-        }
-    } = prototype
+        },
+        connectedCallback = Function(),
+        disconnectedCallback = Function(),
+        adoptedCallback = Function(),
+        init = Function(),
+    } = options
 
     customElements.define(name, class extends classElement {
         constructor() {
             super()
             for (const key in options) {
-                if (this[key] !== undefined)
-                    return
-                this[key] = options[key]
+                if (this[key] === undefined)
+                    this[key] = options[key]
             }
+            init.call(this, ...arguments)
         }
 
         static get observedAttributes() {
@@ -30,6 +41,18 @@ function WebComponentFunction(name,
 
         attributeChangedCallback() {
             attributeChangedCallback.call(this, ...arguments)
+        }
+
+        connectedCallback() {
+            connectedCallback.call(this, ...arguments)
+        }
+
+        disconnectedCallback() {
+            disconnectedCallback.call(this, ...arguments)
+        }
+
+        adoptedCallback() {
+            adoptedCallback.call(this, ...arguments)
         }
     }, { extends: extendsTag })
 }
