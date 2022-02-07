@@ -4,7 +4,7 @@ const excludeAttributes = [
     'connectedCallback',
     'disconnectedCallback',
     'adoptedCallback',
-    'init'
+    'constructor'
 ]
 
 function WebComponentFunction(
@@ -22,7 +22,7 @@ function WebComponentFunction(
         connectedCallback = Function(),
         disconnectedCallback = Function(),
         adoptedCallback = Function(),
-        init = Function(),
+        constructor = Function(),
     } = options
 
     customElements.define(name, class extends classElement {
@@ -32,7 +32,7 @@ function WebComponentFunction(
                 if (this[key] === undefined)
                     this[key] = options[key]
             }
-            init.call(this, ...arguments)
+            constructor.call(this, ...arguments)
         }
 
         static get observedAttributes() {
