@@ -48,7 +48,7 @@ fn('json-',
                 elm.firstElementChild.textContent = entries[i][1]
             })
         },
-        init() {
+        constructor() {
             this.innerHTML = `
                 <h1><span></span></h1>
                 <h2><span></span></h2>
