@@ -57,4 +57,7 @@ function WebComponentFunction(
     }, { extends: extendsTag })
 }
 
-export default WebComponentFunction
+try {
+    module.exports = { WebComponentFunction }
+} catch (error) {
+}

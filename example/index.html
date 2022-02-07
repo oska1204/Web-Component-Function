@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test</title>
-    <script src="script.js" type="module"></script>
+    <script src="../web-component-function.js"></script>
+    <script src="script.js" defer></script>
     <style>
         html {
             background-color: #111;
@@ -22,7 +23,7 @@
             font-family: 'Courier New', Courier, monospace;
             color: salmon;
         }
-    </style>
+        </style>
 </head>
 
 <body>
@@ -30,10 +31,10 @@
     <p is="test-2" text="i'm fine too"></p>
     <test-final text="you sure" style="font-family: sans-serif;"></test-final>
     <pre is="test-2-final" json='{
-    "album": "Plastic Beach",
-    "artist": "Gorillaz",
-    "track": "On Melancholy Hill"
-}'></pre>
+        "album": "Plastic Beach",
+        "artist": "Gorillaz",
+        "track": "On Melancholy Hill"
+    }'></pre>
     <json- json='{
         "album": "Plastic Beach",
         "artist": "Gorillaz",

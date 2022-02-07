@@ -1,4 +1,4 @@
-import fn from '../web-component-function.js';
+const fn = WebComponentFunction
 
 fn('test-',
     {
