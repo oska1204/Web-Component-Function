@@ -28,8 +28,9 @@ function WebComponentFunction(
     customElements.define(name, class extends classElement {
         constructor() {
             super()
+            const keys = Object.keys(this)
             for (const key in options) {
-                if (this[key] === undefined)
+                if (!keys.includes(key))
                     this[key] = options[key]
             }
             constructor.call(this, ...arguments)
