@@ -1,38 +1,27 @@
 const excludeAttributes = [
-    'observedAttributes',
+    'adoptedCallback',
     'attributeChangedCallback',
     'connectedCallback',
+    'constructor',
     'disconnectedCallback',
-    'adoptedCallback',
-    'constructor'
+    'observedAttributes',
 ]
 
 function WebComponentFunction(
     name,
-    options = {},
+    prototype = {},
     classElement = HTMLElement,
     extendsTag
 ) {
     const {
-        observedAttributes = Object.keys(options).filter(e => !excludeAttributes.includes(e)),
-        attributeChangedCallback = function (name, oldValue, newValue) {
-            if (observedAttributes.includes(name))
-                options[name].call(this, newValue, oldValue)
-        },
-        connectedCallback = Function(),
-        disconnectedCallback = Function(),
-        adoptedCallback = Function(),
         constructor = Function(),
-    } = options
+        observedAttributes = Object.keys(prototype)
+            .filter(key => !excludeAttributes.includes(key)),
+    } = prototype
 
-    customElements.define(name, class extends classElement {
+    const cls = class extends classElement {
         constructor() {
             super()
-            const keys = Object.keys(this)
-            for (const key in options) {
-                if (!keys.includes(key))
-                    this[key] = options[key]
-            }
             constructor.call(this, ...arguments)
         }
 
@@ -40,22 +29,21 @@ function WebComponentFunction(
             return observedAttributes;
         }
 
-        attributeChangedCallback() {
-            attributeChangedCallback.call(this, ...arguments)
+        attributeChangedCallback(name, oldValue, newValue) {
+            prototype[name].call(this, newValue, oldValue)
         }
+    }
 
-        connectedCallback() {
-            connectedCallback.call(this, ...arguments)
+    const keys = Object.keys(classElement.prototype)
+    for (const key in prototype) {
+        if (!keys.includes(key)) {
+            cls.prototype[key] = prototype[key]
         }
+    }
 
-        disconnectedCallback() {
-            disconnectedCallback.call(this, ...arguments)
-        }
+    customElements.define(name, cls, { extends: extendsTag })
 
-        adoptedCallback() {
-            adoptedCallback.call(this, ...arguments)
-        }
-    }, { extends: extendsTag })
+    return cls
 }
 
 try {
